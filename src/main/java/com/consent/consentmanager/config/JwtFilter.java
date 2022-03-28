@@ -21,16 +21,24 @@ public class JwtFilter extends OncePerRequestFilter {
     @Autowired
     private JwtService jwtService;
 
-    @Value("${client.id}")
-    private String clientId;
+    @Value("${hospital.client.id}")
+    private String doctorClientId;
+
+    @Value("${patient.client.id}")
+    private String patientClientId;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String auth=request.getHeader("Authorization");
         if(auth!=null && !"".equals(auth) && auth.startsWith("Bearer ")){
             String subject=jwtService.extractID(auth);
-            if(clientId.equals(subject) && SecurityContextHolder.getContext().getAuthentication()==null){
-                UsernamePasswordAuthenticationToken ut=new UsernamePasswordAuthenticationToken(clientId,null,null);
+            if(doctorClientId.equals(subject) && SecurityContextHolder.getContext().getAuthentication()==null){
+                UsernamePasswordAuthenticationToken ut=new UsernamePasswordAuthenticationToken(doctorClientId,null,null);
+                ut.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(ut);
+            }
+            else if(patientClientId.equals(subject) && SecurityContextHolder.getContext().getAuthentication()==null){
+                UsernamePasswordAuthenticationToken ut=new UsernamePasswordAuthenticationToken(patientClientId,null,null);
                 ut.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(ut);
             }

@@ -105,7 +105,9 @@ public class ConsentManagerService {
             return null;
         }
         consent_repo.setConsent_artifact(artifactJson);
-        consent_repo.setConsent_id("Cons_1234");
+        long id=generateID();
+        String consentId="Cons_" + id;
+        consent_repo.setConsent_id(consentId);
         try{
             consent_repository.save(consent_repo);
         }catch(Exception e){
@@ -134,6 +136,11 @@ public class ConsentManagerService {
         }
         return validateConsentResponse;
 
+    }
+
+    public long generateID(){
+        long id=(long) Math.floor(Math.random()*9_000_000_000L)+1_000_000_000L;
+        return id;
     }
 
 

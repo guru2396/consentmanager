@@ -20,23 +20,44 @@ public class ConsentManagerController {
     @Autowired
     private JwtService jwtService;
 
-    @Value("${client.id}")
-    private String clientId;
+    @Value("${hospital.client.id}")
+    private String hospitalClientId;
 
-    @Value("${client.secret}")
-    private String clientSecret;
+    @Value("${hospital.client.secret}")
+    private String hospitalClientSecret;
 
-    @PostMapping(value = "/authenticate")
-    public ResponseEntity<?> authenticate(@RequestBody AuthRequest authRequest){
+    @Value("${patient.client.id}")
+    private String patientClientId;
+
+    @Value("${patient.client.secret}")
+    private String patientClientSecret;
+
+
+    @PostMapping(value = "/doctor-authenticate")
+    public ResponseEntity<?> doctorAuthenticate(@RequestBody AuthRequest authRequest){
         System.out.println("called api");
-        if(clientId.equals(authRequest.getUsername()) && clientSecret.equals(authRequest.getPassword())){
-            String token=jwtService.createToken(clientId);
+        if(hospitalClientId.equals(authRequest.getUsername()) && hospitalClientSecret.equals(authRequest.getPassword())){
+            String token=jwtService.createToken(hospitalClientId);
             System.out.print(token);
             return ResponseEntity.ok(token);
         }
         ResponseEntity<String> resp=new ResponseEntity<>("Unauthorized",HttpStatus.UNAUTHORIZED);
         return resp;
     }
+
+    @PostMapping(value = "/patient-authenticate")
+    public ResponseEntity<?> patientAuthenticate(@RequestBody AuthRequest authRequest){
+        System.out.println("called api");
+        if(patientClientId.equals(authRequest.getUsername()) && patientClientSecret.equals(authRequest.getPassword())){
+            String token=jwtService.createToken(patientClientId);
+            System.out.print(token);
+            return ResponseEntity.ok(token);
+        }
+        ResponseEntity<String> resp=new ResponseEntity<>("Unauthorized",HttpStatus.UNAUTHORIZED);
+        return resp;
+    }
+
+
 
     @GetMapping(value="/get-granted-consents/{doctorId}")
     public ResponseEntity<?> getGrantedConsents(@PathVariable("doctorId") String doctorId){
