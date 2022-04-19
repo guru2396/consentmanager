@@ -80,4 +80,22 @@ public class ConsentManagerController {
         ValidateConsentResponse validateConsentResponse=consentManagerService.validateConsent(consentId);
         return ResponseEntity.ok(validateConsentResponse);
     }
+
+    @GetMapping(value = "/retrieve-consents/{patientId}")
+    public ResponseEntity<?> retrieveConsents(@PathVariable("patientId") String patientId){
+        List<ConsentDto> consentDtoList= consentManagerService.retrieveConsents(patientId);
+        return ResponseEntity.ok(consentDtoList);
+    }
+
+    @PostMapping(value = "/delegate-consent/{doctorId}/{consentId}")
+    public ResponseEntity<?> delegateConsent(@PathVariable("doctorId") String doctorId,@PathVariable("consentId") String consentId){
+        String patientId=consentManagerService.delegateConsent(doctorId,consentId);
+        return ResponseEntity.ok(patientId);
+    }
+
+    @PostMapping(value="/revoke-consent/{consentId}")
+    public ResponseEntity<?> revokeConsent(@PathVariable("consentId") String consentId){
+        String status=consentManagerService.revokeConsent(consentId);
+        return ResponseEntity.ok(status);
+    }
 }

@@ -138,9 +138,83 @@ public class ConsentManagerService {
 
     }
 
+    public List<ConsentDto> retrieveConsents(String patientId){
+        List<ConsentDto> consentDtoList=new ArrayList<>();
+        List<Consent_repo> consent_repoList= consent_repository.getConsentsByPatientId(patientId);
+        if(consent_repoList!=null){
+            ObjectMapper mapper=new ObjectMapper();
+            for(Consent_repo consent_repo:consent_repoList){
+                ConsentDto consentDto=new ConsentDto();
+                consentDto.setConsent_id(consent_repo.getConsent_id());
+                consentDto.setDoctor_id(consent_repo.getDoctor_id());
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                String date=dateFormat.format(consent_repo.getCreated_dt());
+                consentDto.setCreation_date(date);
+                Consent_Artifact artifact=null;
+                try {
+                    artifact=mapper.readValue(consent_repo.getConsent_artifact(),Consent_Artifact.class);
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+                consentDto.setDataCustodianId(artifact.getDataCustodianId());
+                consentDto.setAccess_purpose(artifact.getPurpose());
+                consentDto.setDelegate_access(artifact.getDelegateAccess());
+                consentDto.setValidity(artifact.getValidityDate());
+                consentDtoList.add(consentDto);
+            }
+        }
+        return consentDtoList;
+    }
+
+    public String delegateConsent(String doctorId,String consentId){
+        Consent_repo consent_repo= consent_repository.getConsentById(consentId);
+        Consent_repo delegatedConsent=new Consent_repo();
+        delegatedConsent.setDoctor_id(doctorId);
+        delegatedConsent.setPatient_id(consent_repo.getPatient_id());
+        delegatedConsent.setCreated_dt(new Date());
+        delegatedConsent.setIs_revoked("N");
+        ObjectMapper objectMapper=new ObjectMapper();
+        Consent_Artifact artifact=null;
+        try {
+            artifact=objectMapper.readValue(consent_repo.getConsent_artifact(),Consent_Artifact.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        Calendar calendar=Calendar.getInstance();
+        calendar.add(Calendar.DATE,1);
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        String date=dateFormat.format(calendar.getTime());
+        String creat_date=dateFormat.format(new Date());
+        artifact.setValidityDate(date);
+        artifact.setBeneficiaryId(doctorId);
+        artifact.setCreationDate(creat_date);
+        String newArtifact=null;
+        try {
+            newArtifact=objectMapper.writeValueAsString(artifact);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        delegatedConsent.setConsent_artifact(newArtifact);
+        long id=generateID();
+        String newConsentId="Cons_" + id;
+        delegatedConsent.setConsent_id(newConsentId);
+        consent_repository.save(delegatedConsent);
+        return consent_repo.getPatient_id();
+    }
+
     public long generateID(){
         long id=(long) Math.floor(Math.random()*9_000_000_000L)+1_000_000_000L;
         return id;
+    }
+
+    public String revokeConsent(String consentId){
+        Consent_repo consent_repo= consent_repository.getConsentById(consentId);
+        if(consent_repo!=null){
+            consent_repo.setIs_revoked("Y");
+            consent_repository.save(consent_repo);
+            return "Success";
+        }
+        return null;
     }
 
 
