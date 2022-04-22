@@ -9,5 +9,7 @@ public class ValidateConsentResponse {
 
     private String dataCustodianId;
 
+    private String accessPurpose;
+
     private List<EpisodeDetails> episodes;
 }

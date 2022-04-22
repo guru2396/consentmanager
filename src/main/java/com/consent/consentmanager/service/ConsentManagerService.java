@@ -132,6 +132,7 @@ public class ConsentManagerService {
         if(artifact!=null){
             validateConsentResponse=new ValidateConsentResponse();
             validateConsentResponse.setDataCustodianId(artifact.getDataCustodianId());
+            validateConsentResponse.setAccessPurpose(artifact.getPurpose());
             validateConsentResponse.setEpisodes(artifact.getEhrDetails().getEpisodeDetails());
         }
         return validateConsentResponse;
