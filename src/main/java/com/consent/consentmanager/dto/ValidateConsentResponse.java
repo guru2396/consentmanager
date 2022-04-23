@@ -7,9 +7,9 @@ import java.util.List;
 @Data
 public class ValidateConsentResponse {
 
-    private String dataCustodianId;
+    //private String dataCustodianId;
 
     private String accessPurpose;
 
-    private List<EpisodeDetails> episodes;
+    private List<DataCustodian> dataCustodians;
 }

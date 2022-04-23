@@ -62,7 +62,7 @@ public class ConsentManagerService {
         Consent_Artifact artifact=new Consent_Artifact();
         artifact.setPatientId(createConsent.getPatient_id());
         artifact.setBeneficiaryId(createConsent.getDoctor_id());
-        artifact.setDataCustodianId(createConsent.getDataCustodianId());
+        //artifact.setDataCustodianId(createConsent.getDataCustodianId());
         artifact.setPurpose(createConsent.getPurpose());
         artifact.setDelegateAccess(createConsent.getDelegateAccess());
         artifact.setSignature(createConsent.getSignature());
@@ -76,8 +76,9 @@ public class ConsentManagerService {
         artifact.setSignature("signature");
         EhrDetails ehrDetails=new EhrDetails();
         ehrDetails.setEhrId(createConsent.getEhr_id());
-        List<EpisodeDetails> episodeDetails=new ArrayList<>();
-        if(createConsent.getEpisodes()!=null){
+        List<DataCustodian> dataCustodians=new ArrayList<>();
+        /*if(createConsent.getDataCustodians()!=null){
+
             for(EpisodeDetails episode:createConsent.getEpisodes()){
                 EpisodeDetails details=new EpisodeDetails();
                 details.setEpisodeId(episode.getEpisodeId());
@@ -93,8 +94,8 @@ public class ConsentManagerService {
                 details.setEncounterDetails(encounterDetails);
                 episodeDetails.add(details);
             }
-        }
-        ehrDetails.setEpisodeDetails(episodeDetails);
+        }*/
+        ehrDetails.setDataCustodians(createConsent.getDataCustodians());
         artifact.setEhrDetails(ehrDetails);
         ObjectMapper mapper=new ObjectMapper();
         String artifactJson=null;
@@ -131,9 +132,9 @@ public class ConsentManagerService {
         ValidateConsentResponse validateConsentResponse=null;
         if(artifact!=null){
             validateConsentResponse=new ValidateConsentResponse();
-            validateConsentResponse.setDataCustodianId(artifact.getDataCustodianId());
+            //validateConsentResponse.setDataCustodianId(artifact.getDataCustodianId());
             validateConsentResponse.setAccessPurpose(artifact.getPurpose());
-            validateConsentResponse.setEpisodes(artifact.getEhrDetails().getEpisodeDetails());
+            validateConsentResponse.setDataCustodians(artifact.getEhrDetails().getDataCustodians());
         }
         return validateConsentResponse;
 
@@ -157,7 +158,7 @@ public class ConsentManagerService {
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
-                consentDto.setDataCustodianId(artifact.getDataCustodianId());
+                //consentDto.setDataCustodianId(artifact.getDataCustodianId());
                 consentDto.setAccess_purpose(artifact.getPurpose());
                 consentDto.setDelegate_access(artifact.getDelegateAccess());
                 consentDto.setValidity(artifact.getValidityDate());

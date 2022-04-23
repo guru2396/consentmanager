@@ -9,5 +9,5 @@ public class EhrDetails {
 
     private String ehrId;
 
-    private List<EpisodeDetails> episodeDetails;
+    private List<DataCustodian> dataCustodians;
 }

@@ -8,7 +8,7 @@ public class Consent_Artifact {
 
     private String beneficiaryId;
 
-    private String dataCustodianId;
+    //private String dataCustodianId;
 
     private EhrDetails ehrDetails;
 
