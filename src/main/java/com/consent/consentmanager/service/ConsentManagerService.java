@@ -170,6 +170,7 @@ public class ConsentManagerService {
 
     public String delegateConsent(String doctorId,String consentId){
         Consent_repo consent_repo= consent_repository.getConsentById(consentId);
+
         Consent_repo delegatedConsent=new Consent_repo();
         delegatedConsent.setDoctor_id(doctorId);
         delegatedConsent.setPatient_id(consent_repo.getPatient_id());
@@ -182,6 +183,9 @@ public class ConsentManagerService {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
+        if(!artifact.getDelegateAccess().equals("Yes")){
+            return null;
+        }
         Calendar calendar=Calendar.getInstance();
         calendar.add(Calendar.DATE,1);
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
@@ -190,6 +194,7 @@ public class ConsentManagerService {
         artifact.setValidityDate(date);
         artifact.setBeneficiaryId(doctorId);
         artifact.setCreationDate(creat_date);
+        artifact.setDelegateAccess("No");
         String newArtifact=null;
         try {
             newArtifact=objectMapper.writeValueAsString(artifact);
