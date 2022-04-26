@@ -162,6 +162,7 @@ public class ConsentManagerService {
                 consentDto.setAccess_purpose(artifact.getPurpose());
                 consentDto.setDelegate_access(artifact.getDelegateAccess());
                 consentDto.setValidity(artifact.getValidityDate());
+                consentDto.setDataCustodianList(artifact.getEhrDetails().getDataCustodians());
                 consentDtoList.add(consentDto);
             }
         }

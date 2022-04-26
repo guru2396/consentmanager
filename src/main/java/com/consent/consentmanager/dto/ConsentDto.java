@@ -2,6 +2,8 @@ package com.consent.consentmanager.dto;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class ConsentDto {
 
@@ -9,7 +11,7 @@ public class ConsentDto {
 
     private String doctor_id;
 
-    private String dataCustodianId;
+    //private String dataCustodianId;
 
     private String access_purpose;
 
@@ -18,4 +20,6 @@ public class ConsentDto {
     private String creation_date;
 
     private String validity;
+
+    private List<DataCustodian> dataCustodianList;
 }
